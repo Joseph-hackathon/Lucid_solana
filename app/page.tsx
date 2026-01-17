@@ -2,10 +2,10 @@
 
 import { useWallet } from '@solana/wallet-adapter-react'
 import dynamic from 'next/dynamic'
-import { ArrowRight, Shield, Zap, Eye, Sparkles, Lock, CheckCircle } from 'lucide-react'
+import { ArrowRight, Shield, Zap, Eye, Sparkles, Lock, CheckCircle, ChevronDown, ChevronUp } from 'lucide-react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Hero3D from '@/components/Hero3D'
 import WorkflowDemo from '@/components/WorkflowDemo'
 
@@ -16,8 +16,22 @@ const WalletMultiButton = dynamic(
 )
 
 export default function Home() {
-  const { publicKey, connected } = useWallet()
+  const wallet = useWallet()
+  const { publicKey, connected, disconnect, select, wallets } = wallet
   const [activeStep, setActiveStep] = useState(1)
+  const [showWalletMenu, setShowWalletMenu] = useState(false)
+
+  // Close wallet menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement
+      if (showWalletMenu && !target.closest('.wallet-menu-container')) {
+        setShowWalletMenu(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [showWalletMenu])
 
   const steps = [
     {
@@ -75,8 +89,67 @@ export default function Home() {
               Lucid
             </span>
           </Link>
-          <div className="material-elevation-2 rounded-lg overflow-hidden">
-            <WalletMultiButton />
+          <div className="relative z-[9999] wallet-menu-container">
+            {connected && publicKey ? (
+              <div className="relative">
+                <button
+                  onClick={() => setShowWalletMenu(!showWalletMenu)}
+                  className="flex items-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors"
+                >
+                  <span className="font-mono text-sm">
+                    {publicKey.toString().slice(0, 4)}...{publicKey.toString().slice(-4)}
+                  </span>
+                  {showWalletMenu ? (
+                    <ChevronUp className="w-4 h-4" />
+                  ) : (
+                    <ChevronDown className="w-4 h-4" />
+                  )}
+                </button>
+                {showWalletMenu && (
+                  <div className="absolute right-0 mt-2 w-48 bg-slate-800 rounded-lg shadow-lg border border-slate-700 overflow-hidden z-[10000]">
+                    <button
+                      onClick={async () => {
+                        try {
+                          await disconnect()
+                          setShowWalletMenu(false)
+                        } catch (err) {
+                          console.error('Error disconnecting wallet:', err)
+                        }
+                      }}
+                      className="w-full text-left px-4 py-2 text-white hover:bg-slate-700 transition-colors"
+                    >
+                      Disconnect
+                    </button>
+                    {wallets && wallets.length > 1 && (
+                      <>
+                        <div className="border-t border-slate-700"></div>
+                        <div className="px-2 py-1 text-xs text-slate-400">Switch Wallet</div>
+                        {wallets.map((w: any) => (
+                          <button
+                            key={w.adapter.name}
+                            onClick={async () => {
+                              try {
+                                await select(w.adapter.name)
+                                setShowWalletMenu(false)
+                              } catch (err) {
+                                console.error('Error switching wallet:', err)
+                              }
+                            }}
+                            className="w-full text-left px-4 py-2 text-white hover:bg-slate-700 transition-colors"
+                          >
+                            {w.adapter.name}
+                          </button>
+                        ))}
+                      </>
+                    )}
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="material-elevation-2 rounded-lg overflow-hidden">
+                <WalletMultiButton />
+              </div>
+            )}
           </div>
         </div>
       </nav>
