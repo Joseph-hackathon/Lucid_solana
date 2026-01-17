@@ -1902,7 +1902,7 @@ export default function CapsulesPage() {
             <p className="text-slate-300 mb-8">
               Please connect your Solana wallet to view your capsules
             </p>
-            <div className="material-elevation-2 rounded-lg overflow-hidden inline-block">
+            <div className="material-elevation-2 rounded-lg relative z-50 inline-block">
               <WalletMultiButton />
             </div>
           </div>
@@ -1998,7 +1998,7 @@ export default function CapsulesPage() {
               </span>
             </Link>
             <div className="flex items-center gap-4">
-              <div className="material-elevation-2 rounded-lg overflow-hidden">
+              <div className="material-elevation-2 rounded-lg relative z-50">
                 <WalletMultiButton />
               </div>
               <Link href="/">
