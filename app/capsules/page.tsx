@@ -1902,7 +1902,7 @@ export default function CapsulesPage() {
             <p className="text-slate-300 mb-8">
               Please connect your Solana wallet to view your capsules
             </p>
-            <div className="material-elevation-2 rounded-lg relative z-50 inline-block">
+            <div className="relative z-[9999] inline-block">
               <WalletMultiButton />
             </div>
           </div>
@@ -1986,9 +1986,9 @@ export default function CapsulesPage() {
       </div>
 
       {/* Header */}
-      <header className="fixed top-0 w-full z-50 bg-slate-950/80 backdrop-blur-xl border-b border-slate-800/50">
-        <div className="max-w-7xl mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
+      <header className="fixed top-0 w-full z-50 bg-slate-950/80 backdrop-blur-xl border-b border-slate-800/50 overflow-visible">
+        <div className="max-w-7xl mx-auto px-6 py-4 overflow-visible">
+          <div className="flex items-center justify-between overflow-visible">
             <Link href="/" className="flex items-center gap-3 group">
               <div className="relative w-10 h-10 transition-transform group-hover:rotate-12">
                 <Image src="/logo.svg" alt="Lucid" fill className="object-contain" />
@@ -1998,7 +1998,7 @@ export default function CapsulesPage() {
               </span>
             </Link>
             <div className="flex items-center gap-4">
-              <div className="material-elevation-2 rounded-lg relative z-50">
+              <div className="relative z-[9999]">
                 <WalletMultiButton />
               </div>
               <Link href="/">
